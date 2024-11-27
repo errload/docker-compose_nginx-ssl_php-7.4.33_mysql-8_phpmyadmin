@@ -2,42 +2,29 @@ FROM php:8.2-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl \
-    libonig-dev \
-    locales \
-    nodejs \
-    npm \
-    zlib1g-dev \
-    libicu-dev \
-    supervisor \
+    gnupg \
     g++ \
-    libmcrypt-dev \
-    --no-install-recommends \
-    && rm -r /var/lib/apt/lists/* \
-    && sed -i 's/# ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/' /etc/locale.gen \
-    && locale-gen
+    procps \
+    openssl \
+    git \
+    unzip \
+    zlib1g-dev \
+    libzip-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libicu-dev  \
+    libonig-dev \
+    libxslt1-dev \
+    acl \
+    && echo 'alias sf="php bin/console"' >> ~/.bashrc
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
 
-# Install extensions
-RUN docker-php-ext-install mysqli pdo_mysql mbstring exif pcntl intl bcmath gd
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd
-RUN pecl install mcrypt && docker-php-ext-enable mcrypt
+RUN docker-php-ext-install \
+    pdo pdo_mysql zip xsl gd intl opcache exif mbstring
 
-COPY --from=composer:latest usr/bin/composer /usr/bin/composer
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /src
 USER root
