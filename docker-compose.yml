@@ -23,7 +23,7 @@ services:
         volumes:
             - ./src:/src
             - ./docker/etc/php/php.ini:/usr/local/etc/php/php.ini
-            - ./docker/etc/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#            - ./docker/etc/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
         ports:
             - 9000:9000
         links:
