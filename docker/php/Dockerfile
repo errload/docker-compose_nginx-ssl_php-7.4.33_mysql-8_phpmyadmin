@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8.2-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -37,7 +37,7 @@ RUN docker-php-ext-install gd
 RUN pecl install mcrypt && docker-php-ext-enable mcrypt
 
 COPY --from=composer:latest usr/bin/composer /usr/bin/composer
-RUN pecl install xdebug-3.1.5 && docker-php-ext-enable xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 WORKDIR /src
 USER root
